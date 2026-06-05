@@ -16,7 +16,9 @@ from dotenv import load_dotenv
 from eva.core.brain import EvaBrain
 from eva.core.personality import EVA_SYSTEM_PROMPT, EVA_GREETING
 from eva.memory.vector_store import get_memory
+from eva.memory.deep_memory import get_deep_memory
 from eva.voice.tts import get_voice
+from eva.voice.stt import get_stt
 from eva.vision.screen import get_vision
 from eva.vision import (
     detect_game, GameAnalyzer, GamingAdvisor, create_gaming_mode
@@ -83,7 +85,9 @@ class Eva:
         )
         
         self.memory = get_memory()
+        self.deep_memory = get_deep_memory()
         self.voice = get_voice()
+        self.stt = get_stt()
         self.vision = get_vision()
         
         # Gaming mode
@@ -205,6 +209,46 @@ class Eva:
         response = self.think(user_input)
         audio_file = self.speak(response)
         return response, audio_file
+    
+    def listen(self, timeout: int = 5) -> Optional[str]:
+        """
+        Listen for voice input and transcribe.
+        
+        Args:
+            timeout: Max seconds to wait for speech
+            
+        Returns:
+            Recognized text or None
+        """
+        return self.stt.listen_once(timeout=timeout)
+    
+    def listen_push_to_talk(self, key: str = "space") -> Optional[str]:
+        """
+        Listen using push-to-talk mode.
+        
+        Args:
+            key: Key to hold for recording
+            
+        Returns:
+            Recognized text or None
+        """
+        return self.stt.listen_push_to_talk(key=key)
+    
+    def think_and_speak_voice(self, timeout: int = 5) -> tuple[str, str]:
+        """
+        Listen for voice, think, and speak response.
+        
+        Args:
+            timeout: Max seconds to wait for speech
+            
+        Returns:
+            (response_text, audio_file_path)
+        """
+        text = self.listen(timeout=timeout)
+        if not text:
+            return "Я не расслышала, попробуй ещё раз.", ""
+        
+        return self.think_and_speak(text)
     
     def proactive_check(self):
         """
