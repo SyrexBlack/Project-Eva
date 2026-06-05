@@ -37,6 +37,10 @@ from eva.skills.network_monitor import NetworkMonitor, get_network_monitor
 # Emotional Intelligence (v0.8)
 from eva.skills.emotional_intelligence import EmotionalIntelligence, get_emotional_intelligence
 
+# Web & Research (v0.9)
+from eva.skills.web_search import WebSearch, get_web_search
+from eva.skills.api_integration import APIClient, get_api_client
+
 __version__ = "1.0.0"
 __all__ = [
     # Core
@@ -61,4 +65,9 @@ __all__ = [
     # Emotional Intelligence (v0.8)
     "EmotionalIntelligence",
     "get_emotional_intelligence",
+    # Web & Research (v0.9)
+    "WebSearch",
+    "get_web_search",
+    "APIClient",
+    "get_api_client",
 ]

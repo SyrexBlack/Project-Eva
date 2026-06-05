@@ -1,6 +1,6 @@
 # Project Eva — Roadmap
 
-> Autonomous AI Companion. Version 0.9 🔄 IN PROGRESS
+> Autonomous AI Companion. Version 1.0 ✅ READY FOR RELEASE
 
 ---
 
@@ -126,23 +126,24 @@
 
 ---
 
-## Эпик 7: Web & Research (v0.9)
+## Эпик 7: Web & Research (v0.9) ✅ ЗАВЕРШЕНО
 **Цель:** Ева ищет информацию и учится
 
-### Таск 7.1 — Web Search
-- [ ] Поиск в интернете по запросу
-- [ ] Резюмирование результатов
-- [ ] Fact-checking
+### Таск 7.1 — Web Search ✅
+- [x] Поиск в интернете (DuckDuckGo fallback)
+- [x] Резюмирование результатов
+- [x] Fact-checking
 
-### Таск 7.2 — Learning Loop
-- [ ] Чтение документации
-- [ ] Изучение новых тем
-- [ ] Обновление знаний
+### Таск 7.2 — API Integration ✅
+- [x] Weather (OpenWeatherMap)
+- [x] Crypto prices (CoinMarketCap)
+- [x] News (NewsAPI)
+- [x] Time/Calendar info
 
-### Таск 7.3 — API Integration
-- [ ] Crypto prices
-- [ ] Погода
-- [ ] Новости
+### Таск 7.3 — Learning Loop ✅
+- [x] Research на любую тему
+- [x] Извлечение ключевых фактов
+- [x] Кэширование результатов
 
 ---
 
