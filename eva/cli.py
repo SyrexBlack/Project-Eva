@@ -197,6 +197,38 @@ def memory_clear():
         click.echo(f"❌ Error: {e}")
 
 
+@cli.command()
+@click.option("--model", default="base", help="Whisper model (base/small/medium/large)")
+@click.option("--push-to-talk", is_flag=True, help="Use push-to-talk mode")
+def stt(model, push_to_talk):
+    """🎤 Voice input — speak to Eva."""
+    from eva.voice.stt import EvaSTT, STTConfig
+    
+    click.echo(f"🎤 STT initialization (model: {model})...")
+    
+    config = STTConfig(model=model)
+    stt = EvaSTT(config)
+    
+    try:
+        if push_to_talk:
+            click.echo("📌 Push-to-talk mode: Hold SPACE to record, release to send")
+            click.echo("   Press Ctrl+C to cancel")
+            click.echo("")
+            text = stt.listen_push_to_talk(key="space")
+        else:
+            click.echo("🎙️ Speak now (5 sec timeout)...")
+            text = stt.listen_once(timeout=5)
+        
+        if text:
+            click.echo(f"\n✅ Recognized: {text}")
+        else:
+            click.echo("\n❌ No speech detected")
+            
+    except Exception as e:
+        click.echo(f"❌ Error: {e}")
+        click.echo("   Make sure you have installed: pip install openai-whisper pyaudio")
+
+
 @cli.group()
 def gaming():
     """🎮 Gaming mode — Eva watches your screen during games."""
