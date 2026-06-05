@@ -330,6 +330,166 @@ def gaming_stats():
     click.echo("─" * 30)
 
 
+# =============================================================================
+# Proactive AI Commands (v0.6)
+# =============================================================================
+
+@cli.group()
+def proactive():
+    """🤖 Proactive AI — Eva acts autonomously."""
+    pass
+
+
+@proactive.command(name="start")
+@click.option("--voice", is_flag=True, help="Speak proactive messages aloud")
+def proactive_start(voice):
+    """Start proactive scheduler — Eva will reach out periodically."""
+    from eva.skills.proactive_scheduler import get_proactive_scheduler
+    
+    click.echo("🤖 Starting Proactive Scheduler...")
+    click.echo("   Morning check-in: 9-11 AM")
+    click.echo("   Evening wrap-up: 8-10 PM")
+    click.echo("   Task reminders: every 30 min")
+    click.echo("")
+    click.echo("Press Ctrl+C to stop")
+    click.echo("")
+    
+    def on_message(msg):
+        click.echo(f"\n💬 Ева: {msg}\n")
+        if voice:
+            from eva.voice.tts import get_voice
+            eva_voice = get_voice()
+            audio_file = eva_voice.speak(msg)
+            play_audio(audio_file)
+    
+    scheduler = get_proactive_scheduler(callback=on_message)
+    scheduler.start()
+    
+    try:
+        while True:
+            import time
+            time.sleep(1)
+    except KeyboardInterrupt:
+        scheduler.stop()
+        click.echo("\n\n🤖 Proactive scheduler stopped.")
+
+
+@proactive.command(name="interests")
+def proactive_interests():
+    """Show current interests being monitored."""
+    from eva.skills.interest_engine import get_interest_engine
+    
+    engine = get_interest_engine()
+    interests = engine.get_interests()
+    
+    click.echo("📊 Interest Engine")
+    click.echo("─" * 40)
+    
+    for interest in interests:
+        status = "✅" if interest.enabled else "❌"
+        last = interest.last_check.strftime("%H:%M") if interest.last_check else "never"
+        click.echo(f"   {status} {interest.topic}")
+        click.echo(f"      Priority: {interest.priority:.1f} | Last: {last}")
+    
+    click.echo("─" * 40)
+    click.echo(f"   Total: {len(interests)} interests")
+
+
+@proactive.command(name="tasks")
+def proactive_tasks():
+    """Show pending tasks."""
+    from eva.skills.task_automation import get_task_automation
+    
+    tasks = get_task_automation()
+    pending = tasks.get_pending_tasks(limit=10)
+    due = tasks.get_due_tasks()
+    
+    click.echo("📋 Task Automation")
+    click.echo("─" * 40)
+    
+    if due:
+        click.echo("🔴 DUE NOW:")
+        for task in due:
+            click.echo(f"   - {task.title}")
+        click.echo("")
+    
+    if pending:
+        click.echo("📌 PENDING:")
+        for task in pending[:5]:
+            priority = "🔴" if task.priority.value >= 3 else "📌"
+            click.echo(f"   {priority} {task.title}")
+    
+    click.echo("─" * 40)
+    stats = tasks.get_stats()
+    click.echo(f"   Total: {stats['total_tasks']} | Pending: {stats['pending']} | Due: {stats['due_now']}")
+
+
+@proactive.command(name="add-task")
+@click.argument("title")
+@click.option("--priority", type=click.Choice(["low", "medium", "high", "urgent"]), default="medium")
+@click.option("--minutes", type=int, default=0, help="Due in N minutes")
+def proactive_add_task(title, priority, minutes):
+    """Add a new task/reminder."""
+    from eva.skills.task_automation import get_task_automation, TaskPriority
+    from datetime import datetime, timedelta
+    
+    priority_map = {
+        "low": TaskPriority.LOW,
+        "medium": TaskPriority.MEDIUM,
+        "high": TaskPriority.HIGH,
+        "urgent": TaskPriority.URGENT
+    }
+    
+    due_at = None
+    if minutes > 0:
+        due_at = datetime.now() + timedelta(minutes=minutes)
+    
+    tasks = get_task_automation()
+    task = tasks.add_task(
+        title=title,
+        priority=priority_map[priority],
+        due_at=due_at
+    )
+    
+    click.echo(f"✅ Task added: {task.title}")
+    if due_at:
+        click.echo(f"   Due in {minutes} minutes")
+
+
+@proactive.command(name="stats")
+def proactive_stats():
+    """Show proactive system statistics."""
+    from eva.skills.interest_engine import get_interest_engine
+    from eva.skills.task_automation import get_task_automation
+    from eva.skills.proactive_scheduler import get_proactive_scheduler
+    
+    interests = get_interest_engine().get_stats()
+    tasks = get_task_automation().get_stats()
+    scheduler = get_proactive_scheduler().get_stats()
+    
+    click.echo("🤖 Proactive AI Stats")
+    click.echo("─" * 40)
+    
+    click.echo("📰 Interests:")
+    click.echo(f"   Total: {interests['total_interests']}")
+    click.echo(f"   Active: {interests['active_interests']}")
+    click.echo(f"   Pending news: {interests['pending_news']}")
+    
+    click.echo("")
+    click.echo("📋 Tasks:")
+    click.echo(f"   Total: {tasks['total_tasks']}")
+    click.echo(f"   Pending: {tasks['pending']}")
+    click.echo(f"   Due now: {tasks['due_now']}")
+    click.echo(f"   Completed: {tasks['completed']}")
+    
+    click.echo("")
+    click.echo("⏰ Scheduler:")
+    click.echo(f"   Active actions: {scheduler['active_actions']}")
+    click.echo(f"   Running: {scheduler['running']}")
+    
+    click.echo("─" * 40)
+
+
 def play_audio(filepath: str):
     """Play audio file using system default player."""
     system = platform.system()

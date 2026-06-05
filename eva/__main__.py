@@ -9,6 +9,7 @@ Usage:
     python -m eva recall "query"    # Search memory
     python -m eva stt               # Voice input test
     python -m eva gaming            # Start gaming mode
+    python -m eva proactive         # Proactive AI commands
 """
 
 import sys
@@ -94,6 +95,83 @@ def cmd_gaming():
     return gaming
 
 
+def cmd_proactive(args):
+    """Proactive AI commands."""
+    from eva.skills.interest_engine import get_interest_engine
+    from eva.skills.task_automation import get_task_automation
+    from eva.skills.proactive_scheduler import get_proactive_scheduler
+    
+    if args.subcommand == "interests":
+        engine = get_interest_engine()
+        interests = engine.get_interests()
+        print("📊 Interest Engine")
+        print("─" * 40)
+        for interest in interests:
+            status = "✅" if interest.enabled else "❌"
+            last = interest.last_check.strftime("%H:%M") if interest.last_check else "never"
+            print(f"   {status} {interest.topic}")
+            print(f"      Priority: {interest.priority:.1f} | Last: {last}")
+        print("─" * 40)
+        
+    elif args.subcommand == "tasks":
+        tasks = get_task_automation()
+        pending = tasks.get_pending_tasks(limit=10)
+        due = tasks.get_due_tasks()
+        print("📋 Task Automation")
+        print("─" * 40)
+        if due:
+            print("🔴 DUE NOW:")
+            for task in due:
+                print(f"   - {task.title}")
+        if pending:
+            print("📌 PENDING:")
+            for task in pending[:5]:
+                print(f"   📌 {task.title}")
+        stats = tasks.get_stats()
+        print("─" * 40)
+        print(f"   Total: {stats['total_tasks']} | Pending: {stats['pending']}")
+        
+    elif args.subcommand == "add":
+        from datetime import datetime, timedelta
+        tasks = get_task_automation()
+        due_at = None
+        if args.minutes:
+            due_at = datetime.now() + timedelta(minutes=args.minutes)
+        task = tasks.add_task(title=args.title, due_at=due_at)
+        print(f"✅ Task added: {task.title}")
+        
+    elif args.subcommand == "start":
+        print("🤖 Starting Proactive Scheduler...")
+        print("   Morning check-in: 9-11 AM")
+        print("   Evening wrap-up: 8-10 PM")
+        print("   Task reminders: every 30 min")
+        print("\nPress Ctrl+C to stop\n")
+        
+        scheduler = get_proactive_scheduler(callback=lambda msg: print(f"\n💬 Ева: {msg}\n"))
+        scheduler.start()
+        try:
+            import time
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            scheduler.stop()
+            print("\n🤖 Proactive scheduler stopped.")
+            
+    else:
+        print("📊 Proactive AI Stats")
+        print("─" * 40)
+        
+        engine = get_interest_engine()
+        stats = engine.get_stats()
+        print(f"   Interests: {stats['total_interests']} total, {stats['active_interests']} active")
+        
+        tasks = get_task_automation()
+        t_stats = tasks.get_stats()
+        print(f"   Tasks: {t_stats['total_tasks']} total, {t_stats['pending']} pending, {t_stats['due_now']} due")
+        
+        print("─" * 40)
+
+
 def cmd_chat():
     """Start interactive chat."""
     print("💬 Starting Eva — Press Ctrl+C to exit")
@@ -138,6 +216,19 @@ def main():
     # gaming
     subparsers.add_parser("gaming", help="Start gaming mode")
     
+    # proactive
+    proactive_parser = subparsers.add_parser("proactive", help="Proactive AI commands")
+    proactive_subparsers = proactive_parser.add_subparsers(dest="subcommand", help="Proactive subcommands")
+    
+    proactive_subparsers.add_parser("interests", help="Show monitored interests")
+    proactive_subparsers.add_parser("tasks", help="Show pending tasks")
+    
+    proactive_start_parser = proactive_subparsers.add_parser("start", help="Start proactive scheduler")
+    
+    proactive_add_parser = proactive_subparsers.add_parser("add", help="Add a task")
+    proactive_add_parser.add_argument("title", help="Task title")
+    proactive_add_parser.add_argument("--minutes", type=int, default=0, help="Due in N minutes")
+    
     # chat (default)
     subparsers.add_parser("chat", help="Start interactive chat")
 
@@ -155,6 +246,8 @@ def main():
         cmd_stt()
     elif args.command == "gaming":
         cmd_gaming()
+    elif args.command == "proactive":
+        cmd_proactive(args)
     elif args.command == "chat" or args.command is None:
         cmd_chat()
 
