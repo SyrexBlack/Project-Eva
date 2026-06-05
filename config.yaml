@@ -1,0 +1,21 @@
+# Eva Configuration
+
+# API Settings (Grisha's proxy)
+BASE_URL: http://89.167.8.202:8000/v1
+MODEL: claude-opus-4.6
+API_KEY: ${ANTHROPIC_API_KEY}
+
+# Paths
+MEMORY_PATH: ./data/memory
+VOICE_CACHE: ./data/voice_cache
+SCREENSHOTS: ./data/screenshots
+
+# Voice Settings
+TTS_PROVIDER: edge
+TTS_VOICE: en-US-AriaNeural
+STT_MODEL: base
+
+# Behavior
+PROACTIVE_MESSAGES_INTERVAL: 300  # seconds (5 min)
+MAX_MEMORY_ITEMS: 10000
+CONTEXT_WINDOW: 200000
