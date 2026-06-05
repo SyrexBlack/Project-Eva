@@ -38,6 +38,7 @@ class Mood(Enum):
     UNKNOWN = "unknown"
 
 
+@dataclass
 class EmotionalState:
     """Эмоциональное состояние."""
     mood: Mood
