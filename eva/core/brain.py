@@ -24,7 +24,7 @@ class EvaBrain:
     Connects to Grisha's Opus 4.6 proxy and manages conversations.
     """
     
-    def __init__(self, base_url: str, api_key: str, model: str = "claude-opus-4.6"):
+    def __init__(self, base_url: str, api_key: str, model: str = "claude-opus-4.6", system_prompt: Optional[str] = None):
         """
         Initialize Eva's brain.
         
@@ -32,9 +32,11 @@ class EvaBrain:
             base_url: URL of the API proxy (e.g., http://89.167.8.202:8000/v1)
             api_key: API key for authentication
             model: Model name to use
+            system_prompt: Custom system prompt (optional)
         """
         self.base_url = base_url
         self.model = model
+        self._custom_system = system_prompt or EVA_SYSTEM_PROMPT
         
         # Create OpenAI-compatible client
         self.client = OpenAI(
@@ -48,10 +50,23 @@ class EvaBrain:
         # Initialize with system prompt
         self._init_system()
     
+    @property
+    def system_prompt(self) -> str:
+        return self._custom_system
+    
+    @system_prompt.setter
+    def system_prompt(self, value: str):
+        self._custom_system = value
+        # Update in messages
+        if self.messages and self.messages[0].get("role") == "system":
+            self.messages[0]["content"] = value
+        else:
+            self.messages.insert(0, {"role": "system", "content": value})
+    
     def _init_system(self):
         """Set up the system prompt with Eva's personality."""
         self.messages = [
-            {"role": "system", "content": EVA_SYSTEM_PROMPT}
+            {"role": "system", "content": self._custom_system}
         ]
     
     def think(self, user_input: str, context: Optional[Dict[str, Any]] = None) -> str:

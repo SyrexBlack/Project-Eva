@@ -70,7 +70,12 @@ class Eva:
         """
         # Config from env or parameters
         self.base_url = base_url or os.getenv("BASE_URL", "http://89.167.8.202:8000/v1")
+        
+        # Try to get API key from OpenClaw if not in env
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY", "")
+        if not self.api_key or self.api_key == "***":
+            self.api_key = self._load_openclaw_key()
+        
         self.model = model or os.getenv("MODEL", "claude-opus-4.6")
         
         # Proactive settings
@@ -103,6 +108,22 @@ class Eva:
         # History
         self.conversation_count = 0
         self.started_at = datetime.now()
+    
+    def _load_openclaw_key(self) -> str:
+        """Load API key from OpenClaw config."""
+        import json
+        try:
+            openclaw_config = os.path.expanduser("~/.openclaw/openclaw.json")
+            if os.path.exists(openclaw_config):
+                with open(openclaw_config) as f:
+                    data = json.load(f)
+                providers = data.get('models', {}).get('providers', {})
+                for name, prov in providers.items():
+                    if prov.get('api', '') == 'anthropic-messages':
+                        return prov.get('apiKey', '')
+        except Exception:
+            pass
+        return ""
     
     def think(self, user_input: str, use_memory: bool = True) -> str:
         """
