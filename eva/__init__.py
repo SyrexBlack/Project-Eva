@@ -41,7 +41,19 @@ from eva.skills.emotional_intelligence import EmotionalIntelligence, get_emotion
 from eva.skills.web_search import WebSearch, get_web_search
 from eva.skills.api_integration import APIClient, get_api_client
 
-__version__ = "1.0.0"
+# Telegram Bot (v1.0)
+from eva.skills.telegram_bot import TelegramBot, NotificationManager, get_telegram_bot, get_notification_manager
+
+# GitHub Integration (v1.1)
+from eva.skills.github_integration import GitHubClient, ProjectMonitor, get_github_client, get_project_monitor
+
+# Calendar Integration (v1.2)
+from eva.skills.calendar_integration import LocalCalendar, GoogleCalendarClient, get_local_calendar, get_google_calendar
+
+# Core Integration (v2.0)
+from eva.core.eva_core import EvaCore, get_eva_core
+
+__version__ = "2.0.0"
 __all__ = [
     # Core
     "Eva",
