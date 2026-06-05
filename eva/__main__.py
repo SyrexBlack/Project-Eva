@@ -28,7 +28,7 @@ from eva.voice.stt import EvaSTT
 
 def cmd_status():
     """Check Eva's status."""
-    print("🟢 Eva v0.7.0 — Autonomous AI Companion")
+    print("🟢 Eva v1.0.0 — Autonomous AI Companion")
     print("=" * 40)
     print("Components:")
     print("  ✅ Brain (Claude Opus 4)")
