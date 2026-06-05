@@ -1,66 +1,17 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+# Vendor dependencies
+/vendor/
 *.egg-info/
-.installed.cfg
-*.egg
 
-# Installer logs
-pip-log.txt
+# Data
+/data/
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.pytest_cache/
-
-# Environments
+# Environment
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Python
+__pycache__/
+*.pyc
+*.pyo
 
 # OS
 .DS_Store
-Thumbs.db
-
-# Eva specific
-data/
-*.log
-logs/
-chromadb/
-
-# Screenshots
-data/screenshots/
