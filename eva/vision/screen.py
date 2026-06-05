@@ -40,10 +40,15 @@ class EvaVision:
         os.makedirs(save_path, exist_ok=True)
         
         # MSS instance for fast capture
-        self.sct = mss.mss()
-        
-        # Default monitor (primary screen)
-        self.monitor = self.sct.monitors[1]
+        try:
+            self.sct = mss.mss()
+            self.monitor = self.sct.monitors[1]
+            self._available = True
+        except Exception as e:
+            print(f"⚠️ Screen capture not available (no X-server): {e}")
+            self.sct = None
+            self.monitor = None
+            self._available = False
     
     def capture_screen(self, filename: Optional[str] = None) -> str:
         """
