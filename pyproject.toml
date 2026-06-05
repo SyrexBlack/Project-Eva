@@ -1,0 +1,50 @@
+[project]
+name = "project-eva"
+version = "0.2.0"
+description = "Eva — Autonomous AI Companion for Grisha"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Grisha Efimov", email = "grisha@example.com"}
+]
+keywords = ["ai", "companion", "agent", "chatbot", "autonomous"]
+
+dependencies = [
+    "openai>=1.10.0",
+    "chromadb>=0.4.0",
+    "edge-tts>=6.1.0",
+    "mss>=6.1.0",
+    "opencv-python>=4.8.0",
+    "numpy>=1.24.0",
+    "Pillow>=10.0.0",
+    "click>=8.1.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+eva = "eva.cli:cli"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["eva*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

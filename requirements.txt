@@ -7,12 +7,16 @@ openai>=1.10.0
 chromadb>=0.4.0
 
 # Voice (STT/TTS)
-openai-whisper>=20231117
 edge-tts>=6.1.0
 
 # Vision (screen capture)
 mss>=6.1.0
+opencv-python>=4.8.0
+numpy>=1.24.0
 Pillow>=10.0.0
+
+# CLI
+click>=8.1.0
 
 # Utilities
 python-dotenv>=1.0.0
