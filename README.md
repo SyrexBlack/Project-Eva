@@ -148,7 +148,7 @@ python -m eva --help
 | v0.6 | ✅ | Proactive AI + task automation |
 | v0.7 | ✅ | System integration (servers, files) |
 | v0.8 | ✅ | Emotional intelligence (mood detection) |
-| v1.0 | 🔜 | Release |
+|| v1.0 | ✅ | Release |
 
 ## 📝 License
 

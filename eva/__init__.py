@@ -24,7 +24,7 @@ from eva.memory.deep_memory import DeepMemory
 from eva.voice.stt import EvaSTT
 from eva.voice.tts import get_voice
 
-__version__ = "0.7.0"
+__version__ = "1.0.0"
 __all__ = [
     "Eva",
     "get_memory",

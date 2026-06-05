@@ -1,6 +1,6 @@
 # Project Eva — Roadmap
 
-> Autonomous AI Companion. Version 0.2 → 1.0
+> Autonomous AI Companion. Version 1.0 ✅ RELEASED
 
 ---
 
