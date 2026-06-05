@@ -1,4 +1,5 @@
 # Eva AI Companion - Requirements
+# Install: pip install -r requirements.txt
 
 # Core AI
 openai>=1.10.0
@@ -8,9 +9,9 @@ chromadb>=0.4.0
 
 # Voice (STT/TTS)
 edge-tts>=6.1.0
-openai-whisper>=20231117
-pyaudio>=0.2.14
+faster-whisper>=1.0.0
 pynput>=1.7.6
+# Note: pyaudio requires system libportaudio (Linux: sudo apt install portaudio19-dev)
 
 # Vision (screen capture)
 mss>=6.1.0

@@ -18,3 +18,14 @@ __pycache__/
 
 # ChromaDB
 eva_memory/
+
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
