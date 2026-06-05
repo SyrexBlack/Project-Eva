@@ -34,6 +34,9 @@ from eva.skills.proactive_scheduler import ProactiveScheduler, get_proactive_sch
 from eva.skills.system_monitor import SystemMonitor, get_system_monitor
 from eva.skills.network_monitor import NetworkMonitor, get_network_monitor
 
+# Emotional Intelligence (v0.8)
+from eva.skills.emotional_intelligence import EmotionalIntelligence, get_emotional_intelligence
+
 __version__ = "1.0.0"
 __all__ = [
     # Core
@@ -55,4 +58,7 @@ __all__ = [
     "get_system_monitor",
     "NetworkMonitor",
     "get_network_monitor",
+    # Emotional Intelligence (v0.8)
+    "EmotionalIntelligence",
+    "get_emotional_intelligence",
 ]
