@@ -490,6 +490,114 @@ def proactive_stats():
     click.echo("─" * 40)
 
 
+# =============================================================================
+# System Monitor Commands (v0.7)
+# =============================================================================
+
+@cli.group()
+def system():
+    """💻 System monitoring — CPU, RAM, disk, network."""
+    pass
+
+
+@system.command(name="health")
+def system_health():
+    """Show system health report."""
+    from eva.skills.system_monitor import get_system_monitor
+    
+    monitor = get_system_monitor()
+    health = monitor.check_health()
+    
+    click.echo("💻 System Health")
+    click.echo("─" * 40)
+    
+    metrics = health['metrics']
+    click.echo(f"🖥️  CPU: {metrics['cpu_percent']:.1f}%")
+    click.echo(f"🧠 Memory: {metrics['memory_percent']:.1f}% ({metrics['memory_used_gb']:.1f}/{metrics['memory_total_gb']:.1f} GB)")
+    click.echo(f"💾 Disk: {metrics['disk_percent']:.1f}% ({metrics['disk_free_gb']:.1f} GB free)")
+    
+    if metrics.get('cpu_temp'):
+        click.echo(f"🌡️  Temperature: {metrics['cpu_temp']:.1f}°C")
+    
+    if health['alerts']:
+        click.echo("")
+        click.echo("⚠️  Alerts:")
+        for alert in health['alerts']:
+            click.echo(f"   {alert}")
+    
+    click.echo("─" * 40)
+    click.echo(f"Status: {health['status']}")
+
+
+@system.command(name="processes")
+@click.option("--limit", type=int, default=10, help="Number of processes to show")
+def system_processes(limit):
+    """Show top processes by CPU usage."""
+    from eva.skills.system_monitor import get_system_monitor
+    
+    monitor = get_system_monitor()
+    processes = monitor.get_processes(limit=limit)
+    
+    click.echo("📊 Top Processes by CPU")
+    click.echo("─" * 50)
+    click.echo(f"{'PID':<8} {'Name':<25} {'CPU%':<8} {'MEM%':<8}")
+    click.echo("─" * 50)
+    
+    for proc in processes:
+        click.echo(f"{proc['pid']:<8} {proc['name'][:24]:<25} {proc['cpu']:<8.1f} {proc['memory']:<8.1f}")
+
+
+@system.command(name="network")
+def system_network():
+    """Show network status and latency."""
+    from eva.skills.network_monitor import get_network_monitor
+    
+    monitor = get_network_monitor()
+    status = monitor.check_all_services()
+    
+    click.echo("🌐 Network Status")
+    click.echo("─" * 40)
+    
+    for result in status['results']:
+        click.echo(f"   {result}")
+    
+    click.echo("─" * 40)
+    click.echo(f"Summary: {status['healthy']} healthy, {status['down']} down")
+    
+    # Latency
+    speed = monitor.get_internet_speed()
+    if speed:
+        click.echo(f"Latency: {speed['average_latency_ms']:.0f}ms")
+
+
+@system.command(name="stats")
+def system_stats():
+    """Show system monitoring statistics."""
+    from eva.skills.system_monitor import get_system_monitor
+    from eva.skills.network_monitor import get_network_monitor
+    
+    sys_monitor = get_system_monitor()
+    net_monitor = get_network_monitor()
+    
+    click.echo("💻 System Monitoring Stats")
+    click.echo("─" * 40)
+    
+    sys_stats = sys_monitor.get_stats()
+    click.echo("System Monitor:")
+    click.echo(f"   Running: {sys_stats['running']}")
+    click.echo(f"   History: {sys_stats['history_size']} snapshots")
+    click.echo(f"   Alerts: {sys_stats['total_alerts']}")
+    
+    click.echo("")
+    net_stats = net_monitor.get_stats()
+    click.echo("Network Monitor:")
+    click.echo(f"   Running: {net_stats['running']}")
+    click.echo(f"   Services: {net_stats['services_monitored']}")
+    click.echo(f"   Alerts: {net_stats['total_alerts']}")
+    
+    click.echo("─" * 40)
+
+
 def play_audio(filepath: str):
     """Play audio file using system default player."""
     system = platform.system()

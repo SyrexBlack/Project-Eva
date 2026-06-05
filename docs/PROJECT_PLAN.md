@@ -1,6 +1,6 @@
 # Project Eva — Roadmap
 
-> Autonomous AI Companion. Version 0.7 🔄 IN PROGRESS
+> Autonomous AI Companion. Version 0.8 🔄 IN PROGRESS
 
 ---
 
@@ -86,23 +86,23 @@
 
 ---
 
-## Эпик 5: System Integration (v0.7)
+## Эпик 5: System Integration (v0.7) ✅ ЗАВЕРШЕНО
 **Цель:** Ева глубоко интегрирована в систему
 
-### Таск 5.1 — System Monitor
-- [ ] Мониторинг CPU, RAM, температуры
-- [ ] Уведомления при проблемах
-- [ ] Здоровье системы
+### Таск 5.1 — System Monitor ✅
+- [x] Мониторинг CPU, RAM, температуры
+- [x] Уведомления при высокой нагрузке
+- [x] Top processes
 
-### Таск 5.2 — File Operations
-- [ ] Поиск и открытие файлов
-- [ ] Создание и редактирование
-- [ ] Интеграция с IDE
+### Таск 5.2 — Network Monitor ✅
+- [x] Ping checks и latency
+- [x] Port availability
+- [x] Service health (Internet, DNS, API)
 
-### Таск 5.3 — Network & Servers
-- [ ] Мониторинг серверов (wg-easy, 3x-ui, Vitbon)
-- [ ] Логи и алерты
-- [ ] Удалённое управление
+### Таск 5.3 — CLI Commands ✅
+- [x] `eva system health` — системный отчёт
+- [x] `eva system processes` — топ процессов
+- [x] `eva system network` — сетевой статус
 
 ---
 

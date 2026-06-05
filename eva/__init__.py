@@ -30,6 +30,10 @@ from eva.skills.interest_engine import InterestEngine, get_interest_engine
 from eva.skills.task_automation import TaskAutomation, get_task_automation
 from eva.skills.proactive_scheduler import ProactiveScheduler, get_proactive_scheduler
 
+# System Integration (v0.7)
+from eva.skills.system_monitor import SystemMonitor, get_system_monitor
+from eva.skills.network_monitor import NetworkMonitor, get_network_monitor
+
 __version__ = "1.0.0"
 __all__ = [
     # Core
@@ -46,4 +50,9 @@ __all__ = [
     "get_task_automation",
     "ProactiveScheduler",
     "get_proactive_scheduler",
+    # System Integration (v0.7)
+    "SystemMonitor",
+    "get_system_monitor",
+    "NetworkMonitor",
+    "get_network_monitor",
 ]
