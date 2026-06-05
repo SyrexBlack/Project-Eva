@@ -18,6 +18,9 @@ from eva.core.personality import EVA_SYSTEM_PROMPT, EVA_GREETING
 from eva.memory.vector_store import get_memory
 from eva.voice.tts import get_voice
 from eva.vision.screen import get_vision
+from eva.vision import (
+    detect_game, GameAnalyzer, GamingAdvisor, create_gaming_mode
+)
 
 load_dotenv()
 
@@ -82,6 +85,12 @@ class Eva:
         self.memory = get_memory()
         self.voice = get_voice()
         self.vision = get_vision()
+        
+        # Gaming mode
+        self.game_analyzer: Optional[GameAnalyzer] = None
+        self.game_advisor: Optional[GamingAdvisor] = None
+        self.gaming_active = False
+        self.gaming_thread: Optional[threading.Thread] = None
         
         # State
         self.is_running = False
@@ -307,3 +316,68 @@ class Eva:
         self.conversation_count = state.get("conversation_count", 0)
         if state.get("started_at"):
             self.started_at = datetime.fromisoformat(state["started_at"])
+
+    # =========================================================================
+    # Gaming Mode
+    # =========================================================================
+
+    def start_gaming_mode(self, on_advice: Optional[Callable[[str], None]] = None):
+        """
+        Start gaming mode — Eva will watch your screen and give advice.
+        
+        Args:
+            on_advice: Callback when Eva has advice to share
+        """
+        if self.gaming_active:
+            return
+        
+        # Initialize gaming components
+        self.game_analyzer, self.game_advisor = create_gaming_mode(
+            base_url=self.base_url,
+            api_key=self.api_key
+        )
+        self.gaming_active = True
+        self._on_gaming_advice = on_advice
+        
+        def gaming_loop():
+            while self.gaming_active:
+                # Check if game is running
+                game = detect_game()
+                
+                if game:
+                    # Analyze screen
+                    advice = self.game_advisor.analyze_and_advise()
+                    
+                    if advice and self._on_gaming_advice:
+                        self._on_gaming_advice(advice)
+                
+                # Sleep before next check (5 seconds)
+                time.sleep(5)
+        
+        self.gaming_thread = threading.Thread(target=gaming_loop, daemon=True)
+        self.gaming_thread.start()
+    
+    def stop_gaming_mode(self):
+        """Stop gaming mode."""
+        self.gaming_active = False
+    
+    def get_gaming_stats(self) -> dict:
+        """Get gaming session statistics."""
+        if self.game_advisor:
+            return self.game_advisor.get_session_stats()
+        return {}
+    
+    def analyze_screen(self) -> Optional[str]:
+        """
+        Manually trigger screen analysis.
+        
+        Returns:
+            Advice text or None if no game detected
+        """
+        if not self.game_analyzer:
+            self.game_analyzer, self.game_advisor = create_gaming_mode(
+                base_url=self.base_url,
+                api_key=self.api_key
+            )
+        
+        return self.game_advisor.analyze_and_advise()

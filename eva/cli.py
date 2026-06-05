@@ -21,6 +21,7 @@ from eva.companion import Eva
 from eva.memory.vector_store import get_memory
 from eva.voice.tts import get_voice
 from eva.vision.screen import get_vision
+from eva.vision import detect_game
 
 load_dotenv()
 
@@ -194,6 +195,107 @@ def memory_clear():
         click.echo("✅ Память очищена.")
     except Exception as e:
         click.echo(f"❌ Error: {e}")
+
+
+@cli.group()
+def gaming():
+    """🎮 Gaming mode — Eva watches your screen during games."""
+    pass
+
+
+@gaming.command(name="start")
+@click.option("--voice", is_flag=True, help="Speak advice aloud")
+def gaming_start(voice):
+    """Start gaming mode — Eva watches and advises."""
+    click.echo("🎮 Starting Gaming Mode...")
+    
+    # Check if game is running
+    game = detect_game()
+    if game:
+        click.echo(f"✅ Game detected: {game.name}")
+    else:
+        click.echo("⚠️ No game detected. Will activate when game starts.")
+    
+    click.echo("   Analyzing screen every 5 seconds...")
+    click.echo("   Press Ctrl+C to stop")
+    click.echo("")
+    
+    # Initialize Eva with gaming
+    eva = Eva()
+    
+    def on_advice(advice):
+        click.echo(f"\n🎯 Ева: {advice}\n")
+        if voice:
+            audio_file = eva.speak(advice)
+            play_audio(audio_file)
+    
+    eva.start_gaming_mode(on_advice=on_advice)
+    
+    try:
+        # Keep running
+        while eva.gaming_active:
+            import time
+            time.sleep(1)
+    except KeyboardInterrupt:
+        eva.stop_gaming_mode()
+        click.echo("\n\n🎮 Gaming mode stopped.")
+
+
+@gaming.command(name="check")
+def gaming_check():
+    """Check if a game is currently running."""
+    game = detect_game()
+    
+    if game:
+        click.echo(f"✅ Game detected: {game.name}")
+        click.echo(f"   Type: {game.type.value}")
+        click.echo(f"   Process: {game.process_name}")
+    else:
+        click.echo("❌ No game detected.")
+
+
+@gaming.command(name="analyze")
+@click.option("--voice", is_flag=True, help="Speak advice aloud")
+def gaming_analyze(voice):
+    """Manually analyze current screen."""
+    click.echo("👁️ Analyzing screen...")
+    
+    game = detect_game()
+    if not game:
+        click.echo("❌ No game detected.")
+        return
+    
+    click.echo(f"✅ Game: {game.name}")
+    
+    # Analyze
+    eva = Eva()
+    advice = eva.analyze_screen()
+    
+    if advice:
+        click.echo(f"\n🎯 Ева: {advice}")
+        
+        if voice:
+            audio_file = eva.speak(advice)
+            play_audio(audio_file)
+    else:
+        click.echo("❌ Could not analyze screen.")
+
+
+@gaming.command(name="stats")
+def gaming_stats():
+    """Show gaming session statistics."""
+    eva = Eva()
+    stats = eva.get_gaming_stats()
+    
+    if not stats:
+        click.echo("❌ No gaming session active.")
+        return
+    
+    click.echo("🎮 Gaming Stats")
+    click.echo("─" * 30)
+    for key, value in stats.items():
+        click.echo(f"   {key}: {value}")
+    click.echo("─" * 30)
 
 
 def play_audio(filepath: str):

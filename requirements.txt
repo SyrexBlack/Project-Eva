@@ -8,6 +8,8 @@ chromadb>=0.4.0
 
 # Voice (STT/TTS)
 edge-tts>=6.1.0
+openai-whisper>=20231117
+pyaudio>=0.2.14
 
 # Vision (screen capture)
 mss>=6.1.0
