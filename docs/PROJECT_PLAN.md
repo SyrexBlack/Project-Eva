@@ -1,6 +1,6 @@
 # Project Eva — Roadmap
 
-> Autonomous AI Companion. Version 1.0 ✅ RELEASED
+> Autonomous AI Companion. Version 0.5 ✅ RELEASED
 
 ---
 
@@ -197,5 +197,5 @@ v1.0   → Release
 | **Game Detector** | `vision/game_detector.py` | ✅ Готово |
 | Game Analyzer | `vision/game_analyzer.py` | 🔜 Next |
 | Gaming Advisor | `skills/gaming.py` | 🔜 |
-| STT | `voice/stt.py` | 🔜 |
-| Deep Memory | `memory/deep_memory.py` | 🔜 |
+| STT (Whisper) | `voice/stt.py` | ✅ Готово |
+| Deep Memory (ChromaDB) | `memory/deep_memory.py` | ✅ Готово |
