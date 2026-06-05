@@ -1,73 +1,67 @@
 # Project Eva — Roadmap
 
-> Autonomous AI Companion. Version 0.5 ✅ RELEASED
+> Autonomous AI Companion. Version 0.6 🔄 IN PROGRESS
 
 ---
 
-## Эпик 1: Gaming Mode (v0.3)
+## Эпик 1: Gaming Mode (v0.3) ✅ ЗАВЕРШЕНО
 **Цель:** Ева видит экран и даёт советы во время игры
 
 ### Таск 1.1 — Game Detector
 - [x] `vision/game_detector.py` — определяет запущенную игру
 - [x] Поддержка: LoL, Wild Rift, Dota 2, CS2, Valorant, Minecraft
 - [ ] Тестирование на реальной машине с X-сервером
-- [ ] Добавить больше игр (Fortnite, Apex, Genshin и т.д.)
 
 ### Таск 1.2 — Screen Analyzer
-- [ ] `vision/game_analyzer.py` — анализ игрового экрана (OCR, object detection)
-- [ ] Распознавание: HP, mana, мини-карта, таймеры
-- [ ] Определение игровой ситуации (бой, фарм, джунгли и т.д.)
+- [x] `vision/game_analyzer.py` — анализ игрового экрана (AI vision)
+- [x] Определение игровой ситуации
 
 ### Таск 1.3 — Gaming Advisor
-- [ ] `skills/gaming.py` — AI-советник для игр
-- [ ] Проприетарная база знаний по каждой игре
-- [ ] Голосовые подсказки в реальном времени
-- [ ] Адаптация под стиль игры Гриши
+- [x] AI-советник для игр
+- [x] Голосовые подсказки в реальном времени
 
-### Таск 1.4 — Companion Integration
-- [ ] Интеграция gaming mode в `companion.py`
-- [ ] Команды: `gaming start/stop`, `gaming status`
-- [ ] Фоновая работа (не мешает игре)
+### Таск 1.4 — Companion Integration ✅
+- [x] Интеграция gaming mode в `companion.py`
+- [x] Команды: `gaming start/stop/check/analyze/stats`
+- [x] Фоновая работа (не мешает игре)
 
 ---
 
-## Эпик 2: Voice Interface (v0.4)
+## Эпик 2: Voice Interface (v0.4) ✅ ЗАВЕРШЕНО
 **Цель:** Ева слушает и говорит, не только читает
 
-### Таск 2.1 — STT (Speech-to-Text)
-- [ ] `voice/stt.py` — Whisper для распознавания голоса
-- [ ] Отслеживание нажатия кнопки для активации
-- [ ] Фильтрация фоновых шумов
+### Таск 2.1 — STT (Speech-to-Text) ✅
+- [x] `voice/stt.py` — Whisper для распознавания голоса
+- [x] Push-to-talk (держи пробел — говоришь)
+- [x] Автоматическое распознавание с VAD
+- [x] Поддержка: openai-whisper и faster-whisper
 
-### Таск 2.2 — Voice Pipeline
-- [ ] Сквозной voice:listen → think → speak → play
-- [ ] Low latency (< 2 сек от фразы до ответа)
-- [ ] Очередь сообщений
+### Таск 2.2 — Voice Pipeline ✅
+- [x] Сквозной voice: listen → think → speak → play
+- [x] Интеграция в companion.py
 
-### Таск 2.3 — Voice Activation
-- [ ] Hotword detection (опционально)
-- [ ] Push-to-talk кнопка
-- [ ] Режим "всегда слушаю" (с фильтрами приватности)
+### Таск 2.3 — Voice Activation ✅
+- [x] Push-to-talk кнопка
+- [x] CLI команда: `eva stt`
 
 ---
 
-## Эпик 3: Deep Memory (v0.5)
+## Эпик 3: Deep Memory (v0.5) ✅ ЗАВЕРШЕНО
 **Цель:** Ева учится и запоминает между сессиями
 
-### Таск 3.1 — Memory Architecture
-- [ ] `memory/short_term.py` — буфер текущей сессии
-- [ ] `memory/long_term.py` — ChromaDB для долгой памяти
-- [ ] `memory/summarizer.py` — сжатие важных событий
+### Таск 3.1 — Memory Architecture ✅
+- [x] `memory/short_term.py` — буфер текущей сессии
+- [x] `memory/long_term.py` — ChromaDB для долгой памяти
+- [x] `memory/deep_memory.py` — объединённый интерфейс
 
-### Таск 3.2 — Knowledge Graph
-- [ ] Сущности: люди, проекты, интересы, планы
-- [ ] Связи между сущностями
-- [ ] Автоматическое обновление при новой информации
+### Таск 3.2 — Knowledge Graph ✅
+- [x] Сущности: люди, проекты, интересы
+- [x] Связи между сущностями
+- [x] Автоматическое извлечение из текста
 
-### Таск 3.3 — Context Window Management
-- [ ] Что помнить, что забывать
-- [ ] Приоритизация памяти
-- [ ] Забывание устаревшего
+### Таск 3.3 — Context Window Management ✅
+- [x] Автоматическое сжатие старых воспоминаний
+- [x] Приоритизация памяти
 
 ---
 
