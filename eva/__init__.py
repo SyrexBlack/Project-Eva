@@ -20,7 +20,7 @@ Usage:
 
 from eva.companion import Eva
 from eva.memory.vector_store import get_memory
-from eva.memory.deep_memory import DeepMemory
+from eva.memory.deep_memory import DeepMemory, get_deep_memory
 from eva.voice.stt import EvaSTT
 from eva.voice.tts import get_voice
 
@@ -28,6 +28,7 @@ __version__ = "1.0.0"
 __all__ = [
     "Eva",
     "get_memory",
+    "get_deep_memory",
     "DeepMemory",
     "EvaSTT",
     "get_voice",
