@@ -286,11 +286,88 @@ class EvaSTT:
         Returns:
             Распознанный текст
         """
-        # TODO: Реализовать keyboard listener
-        # Для этого нужен отдельный поток или pynput
+        try:
+            from pynput import keyboard
+        except ImportError:
+            return "[pynput not installed: pip install pynput]"
         
-        # Пока возвращаем инструкцию
-        return "[Push-to-talk requires pynput. Use listen_once() instead.]"
+        import threading
+        
+        is_recording = threading.Event()
+        is_recording.clear()
+        frames = []
+        
+        def on_press(key_press):
+            """Handle key press - start recording."""
+            try:
+                if key == "space":
+                    if key_press == keyboard.Key.space:
+                        is_recording.set()
+                else:
+                    if hasattr(key_press, 'char') and key_press.char == key:
+                        is_recording.set()
+            except AttributeError:
+                pass
+        
+        def on_release(key_release):
+            """Handle key release - stop recording."""
+            try:
+                if key == "space":
+                    if key_release == keyboard.Key.space:
+                        is_recording.clear()
+                else:
+                    if hasattr(key_release, 'char') and key_release.char == key:
+                        is_recording.clear()
+            except AttributeError:
+                pass
+        
+        # Start keyboard listener
+        listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+        listener.start()
+        
+        print(f"🎤 Push-to-talk: Hold '{key}' to record, release to transcribe")
+        print("Press Ctrl+C to cancel...")
+        
+        # Recording
+        self._load_pyaudio()
+        import pyaudio
+        
+        stream = self._pyaudio.open(
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=16000,
+            input=True,
+            frames_per_buffer=1024
+        )
+        
+        was_recording = False
+        try:
+            while True:
+                data = stream.read(1024, exception_on_overflow=False)
+                
+                if is_recording.is_set():
+                    was_recording = True
+                    frames.append(data)
+                    
+                    # Max 30 seconds
+                    if len(frames) > 30 * 16:
+                        break
+                elif was_recording:
+                    break
+        
+        except KeyboardInterrupt:
+            pass
+        finally:
+            stream.stop_stream()
+            stream.close()
+            listener.stop()
+        
+        if not frames:
+            return None
+        
+        # Transcribe
+        audio_bytes = self._make_wav(b"".join(frames), 16000)
+        return self._transcribe(audio_bytes)
     
     def listen_callback(
         self,

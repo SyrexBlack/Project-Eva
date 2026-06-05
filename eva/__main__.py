@@ -72,13 +72,16 @@ def cmd_recall(query: str):
 
 
 def cmd_stt():
-    """Test voice input."""
-    print("🎤 Voice Input Test")
-    print("Press Enter to start recording, then speak...")
-    input()
+    """Test voice input (push-to-talk)."""
+    print("🎤 Voice Input Test — Push-to-Talk")
+    print("Hold SPACE to record, release to transcribe")
+    print("Press Ctrl+C to cancel\n")
     stt = EvaSTT()
     text = stt.listen_push_to_talk()
-    print(f"📝 You said: {text}")
+    if text:
+        print(f"\n📝 Recognized: {text}")
+    else:
+        print("\n❌ No speech detected")
     return text
 
 
